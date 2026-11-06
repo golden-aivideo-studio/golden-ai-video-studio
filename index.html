@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101322">
+<title>Golden AI Video Studio</title>
+<style>
+:root{--bg:#0b0e19;--panel:#151a2b;--panel2:#1d2438;--gold:#f4c45e;--text:#f6f7fb;--muted:#aab2c5;--line:#2b344d}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top right,#202747 0,#0b0e19 45%);color:var(--text);font-family:Inter,system-ui,Arial,sans-serif}
+header{display:flex;align-items:center;justify-content:space-between;padding:16px max(18px,calc((100% - 1080px)/2));border-bottom:1px solid var(--line);position:sticky;top:0;background:#0b0e19ed;backdrop-filter:blur(12px);z-index:5}
+.brand{font-weight:800;letter-spacing:.2px}.brand span{color:var(--gold)}.pill{font-size:12px;border:1px solid #5e512e;color:var(--gold);padding:6px 10px;border-radius:99px}
+main{max-width:1080px;margin:auto;padding:28px 18px 60px}.hero{text-align:center;margin:20px auto 28px}.hero h1{font-size:clamp(30px,7vw,52px);line-height:1.06;margin:0 0 12px}.hero h1 em{font-style:normal;color:var(--gold)}.hero p{color:var(--muted);margin:0}
+.layout{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}.card{background:linear-gradient(150deg,#171d30,#111626);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 12px 40px #0002}.card h2{font-size:18px;margin:0 0 16px}
+.tabs{display:flex;gap:8px;margin-bottom:18px}.tab{flex:1;border:1px solid var(--line);background:var(--panel2);color:var(--muted);padding:11px 8px;border-radius:11px;font-weight:650}.tab.active{background:#3a3020;border-color:#9b7938;color:var(--gold)}
+label{display:block;font-size:13px;color:#d7dced;margin:15px 0 8px}textarea,select,input{width:100%;background:#0c1120;border:1px solid var(--line);border-radius:11px;padding:13px;color:var(--text);font:inherit;outline:none}textarea{min-height:125px;resize:vertical}textarea:focus,select:focus{border-color:var(--gold)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.formats{display:flex;gap:8px}.format{flex:1}.format input{display:none}.format span{display:block;text-align:center;padding:11px 5px;border:1px solid var(--line);border-radius:10px;background:#0c1120;color:var(--muted);font-size:13px}.format input:checked+span{border-color:var(--gold);color:var(--gold);background:#332b1d}
+button.primary{width:100%;margin-top:20px;padding:14px;border:0;border-radius:12px;background:linear-gradient(100deg,#f0bd50,#ffe09a);color:#211a0c;font-weight:800;font-size:15px}
+button:disabled{opacity:.55}.note{font-size:12px;color:var(--muted);line-height:1.5;margin-top:12px}
+.preview{min-height:390px;display:flex;flex-direction:column}.screen{flex:1;min-height:270px;border:1px dashed #46516d;border-radius:14px;background:radial-gradient(circle,#202945,#0b1020 70%);display:flex;align-items:center;justify-content:center;text-align:center;padding:20px}.screen .symbol{font-size:42px;margin-bottom:12px}.screen p{color:var(--muted);font-size:13px;max-width:260px;margin:6px auto}
+.status{margin-top:14px;padding:12px;border-radius:10px;background:#0d1425;border:1px solid var(--line);font-size:12px;color:var(--muted);line-height:1.5}
+footer{text-align:center;color:#78839b;font-size:12px;margin-top:26px}
+@media(max-width:760px){.layout{grid-template-columns:1fr}.preview{min-height:330px}.screen{min-height:230px}header{padding:14px 16px}.card{padding:16px}}
+</style>
+</head>
+<body>
+<header><div class="brand">✨ <span>Golden</span> AI Video Studio</div><div class="pill">BETA · FREE DEMO</div></header>
+<main>
+<section class="hero"><h1>Create videos with <em>AI</em></h1><p>Turn your ideas and photos into videos. Your creative studio starts here.</p></section>
+<div class="layout">
+<section class="card">
+<h2>🎬 Create your video</h2>
+<div class="tabs">
+<button class="tab active" id="textTab" type="button">Text to Video</button>
+<button class="tab" id="imageTab" type="button">Image to Video</button>
+</div>
+<label for="prompt">Describe your video</label>
+<textarea id="prompt" maxlength="1200" placeholder="Example: A cinematic sunrise over the Himalayas, golden light, clouds moving slowly, realistic film look..."></textarea>
+<div id="imageField" hidden>
+<label for="imageUpload">Upload an image</label>
+<input id="imageUpload" type="file" accept="image/*">
+</div>
+<div class="grid2">
+<div><label>Video duration</label><select id="duration"><option value="5">5 seconds</option><option value="10">10 seconds</option><option value="30">30 seconds</option></select></div>
+<div><label>Video quality</label><select id="quality"><option>Standard</option><option>HD (when supported)</option></select></div>
+</div>
+<label>Aspect ratio</label>
+<div class="formats">
+<label class="format"><input type="radio" name="ratio" value="9:16" checked><span>9:16 Shorts</span></label>
+<label class="format"><input type="radio" name="ratio" value="16:9"><span>16:9 YouTube</span></label>
+<label class="format"><input type="radio" name="ratio" value="1:1"><span>1:1 Square</span></label>
+</div>
+<button class="primary" id="generate">Generate video (demo)</button>
+<p class="note">This first version is a working website interface. Real AI rendering is not connected yet; connect a video-generation provider on the server before accepting real generation requests.</p>
+</section>
+<section class="card preview">
+<h2>📽️ Video preview</h2>
+<div class="screen" id="screen"><div><div class="symbol">✦</div><strong>Your video will appear here</strong><p>Write a prompt, choose a format, then try the demo.</p></div></div>
+<div class="status" id="status">Status: Ready · Demo mode</div>
+</section>
+</div>
+<footer>© 2026 Golden AI Video Studio · Built for creators</footer>
+</main>
+<script>
+const textTab=document.getElementById('textTab'),imageTab=document.getElementById('imageTab'),imageField=document.getElementById('imageField');
+let mode='text';
+function setMode(next){mode=next;textTab.classList.toggle('active',mode==='text');imageTab.classList.toggle('active',mode==='image');imageField.hidden=mode!=='image';}
+textTab.addEventListener('click',()=>setMode('text'));imageTab.addEventListener('click',()=>setMode('image'));
+document.getElementById('generate').addEventListener('click',()=>{
+ const prompt=document.getElementById('prompt').value.trim();
+ const file=document.getElementById('imageUpload').files[0];
+ const status=document.getElementById('status'),screen=document.getElementById('screen');
+ if(!prompt){status.textContent='Please describe the video first.';document.getElementById('prompt').focus();return;}
+ if(mode==='image'&&!file){status.textContent='Please upload an image for Image to Video.';return;}
+ const ratio=document.querySelector('input[name="ratio"]:checked').value;
+ const duration=document.getElementById('duration').value;
+ screen.innerHTML='<div><div class="symbol">🎞️</div><strong>Demo request prepared</strong><p>'+escapeHtml(prompt)+'</p><p>Mode: '+(mode==='text'?'Text to Video':'Image to Video')+' · '+duration+' sec · '+ratio+'</p></div>';
+ status.textContent='Demo only: your settings are ready, but no video has been rendered. A real video API and secure server key are required.';
+});
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+</script>
+</body></html>
